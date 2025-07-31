@@ -1,19 +1,10 @@
 #----------------Cleaning the environment
 rm(list=ls())
 
-
-library("ggplot2")
-library("dplyr")
-library("IRdisplay")
-library("readxl")
-library("plyr")
-
-library(tidyverse)
-library(factoextra)
-library(KODAMA)
-library(vegan)
-
-
+suppressPackageStartupMessages({
+  library(tidyverse) # For data manipulation (dplyr) and plotting (ggplot2)
+  library(KODAMA)    # For the normalization() function
+})
 
 #Function for saving. if the directory doesn't exist it will create new.
 check_dir_and_save_csv <- function(Data_to_save, directory, filename) {
@@ -45,8 +36,7 @@ Frequency_plots <- function(freqTable,plotTitle){
     ylab("(Log)Frequency") + 
     theme(plot.title = element_text(hjust = 0.5))
   
-  Cutoff_LOD <- round(min(blk_rem[blk_rem > 0]))
-  message(paste0("The limit of detection (LOD) is: ",Cutoff_LOD)) 
+  
   return(final_plot)
 }
 #===========================For Negative========================================
@@ -112,7 +102,7 @@ Sample2 <- filter(BSaverage, bin == "1")
 Sample2 <- data.frame(Sample2[,-1], row.names=Sample2[,1])
 Sample_clean <- Sample_data %>% filter(rownames(Sample_data) %in% rownames(Sample2))
 
-save_dir <- "C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/results/Cleaned_data/"
+save_dir <- "C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/Cleaned_data/"
 check_dir_and_save_csv(Sample_clean,save_dir,"Data_Cleanup_Negative.csv")
 
 
@@ -136,6 +126,9 @@ colnames(FreqTable)[1] <- 'Range_Bins' #changing the 1st colname to 'Range Bins'
 
 ## Frequency Plot
 freq_plot <- Frequency_plots(FreqTable,"Frequency plot - Gap to Fill: Negative")
+Cutoff_LOD <- round(min(blk_rem[blk_rem > 0]))
+message(paste0("The limit of detection (LOD) is: ",Cutoff_LOD)) 
+
 freq_plot
 
 setwd(save_dir)
@@ -166,8 +159,11 @@ colnames(FreqTable)[1] <- 'Range_Bins' #changing the 1st colname to 'Range Bins'
 
 ## Frequency Plot
 freq_plot_filled <- Frequency_plots(FreqTable,"Frequency plot - Gap Filled: Negative")
+Cutoff_LOD <- round(min(blk_rem[blk_rem > 0]))
+message(paste0("The limit of detection (LOD) is: ",Cutoff_LOD)) 
+
 freq_plot_filled
-ggsave("Negative Frequency plot - Gap Filled.png", freq_plot_filled, width = 15, height = 10)
+ggsave("Imputed Frequency plot - Gap Filled - Negative.png", freq_plot_filled, width = 15, height = 10)
 
 
 sum(imp==0) # checking if there are any zeros in our imputed table 
@@ -195,6 +191,7 @@ Norma_Data <- data.frame(row.ID = select(Sample_clean, row.ID),
                          mz = select(Sample_clean, row.m.z), 
                          RT = select(Sample_clean, row.retention.time)
                          ,norm_tic)
+setwd("C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/data")
 
 write.csv(Norma_Data, 'Imputed_TIC_Normalised_table_Negative.csv', row.names =FALSE)
 
@@ -270,7 +267,7 @@ Sample2 <- filter(BSaverage, bin == "1")
 Sample2 <- data.frame(Sample2[,-1], row.names=Sample2[,1])
 Sample_clean <- Sample_data %>% filter(rownames(Sample_data) %in% rownames(Sample2))
 
-save_dir <- "C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/results/Cleaned_data/"
+save_dir <- "C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/Cleaned_data/"
 check_dir_and_save_csv(Sample_clean,save_dir,"Data_Cleanup_Positive.csv")
 
 #==============Imputation ================
@@ -292,9 +289,14 @@ FreqTable$Log_Freq <- log(FreqTable$Freq+1) #Log scaling the frequency values
 colnames(FreqTable)[1] <- 'Range_Bins' #changing the 1st colname to 'Range Bins'
 
 ## Frequency Plot
-freq_plot <- Frequency_plots(FreqTable,"Frequency plot - Gap Filled: Positive")
+freq_plot <- Frequency_plots(FreqTable,"Frequency plot - Gap to Fill: Positive")
 freq_plot
 
+Cutoff_LOD <- round(min(blk_rem[blk_rem > 0]))
+message(paste0("The limit of detection (LOD) is: ",Cutoff_LOD)) 
+
+setwd(save_dir)
+ggsave("Frequency plot - Gap to Fill - Positive.png", freq_plot, width = 15, height = 10)
 
 set.seed(141222) # by setting a seed, we generate the same set of random number all the time
 
@@ -319,10 +321,12 @@ colnames(FreqTable)[1] <- 'Range_Bins' #changing the 1st colname to 'Range Bins'
 
 ## Frequency Plot
 freq_plot_filled <- Frequency_plots(FreqTable,"Imputed Frequency plot - Gap Filled: Positive")
+Cutoff_LOD <- round(min(blk_rem[blk_rem > 0]))
+message(paste0("The limit of detection (LOD) is: ",Cutoff_LOD)) 
 freq_plot_filled
 
 setwd(save_dir)
-ggsave("Imputed Frequency plot - Gap Filled: Positive.png", freq_plot_filled, width = 15, height = 10)
+ggsave("Imputed Frequency plot - Gap Filled - Positive.png", freq_plot_filled, width = 15, height = 10)
 
 sum(imp==0) # checking if there are any zeros in our imputed table 
 dir()
@@ -352,7 +356,7 @@ Norma_Data <- data.frame(row.ID = select(Sample_clean, row.ID),
                          mz = select(Sample_clean, row.m.z), 
                          RT = select(Sample_clean, row.retention.time)
                          ,norm_tic)
-
+setwd("C:/Users/omers/Documents/GitHub/COBMINDEX_Metabolomics/data")
 write.csv(Norma_Data, "Imputed_TIC_Normalised_table_Positive.csv", row.names =FALSE)
 dir()
 
