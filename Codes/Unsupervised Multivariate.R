@@ -47,9 +47,7 @@ metadata <- read.csv("NEGmetaData.csv")
 head(metadata, 4)
 
 
-
-
-metadata <- subset(metadata,Gruops %in% c("Healthy","CD","UC"))
+metadata <- subset(metadata,Group %in% c("Healthy","CD","UC"))
 # Remove the first three columns (ID, m/z, RT) and convert to matrix
 peak_data <- as.matrix(feature_table[, -c(1:3)])
 head(peak_data)
@@ -61,14 +59,37 @@ sample_names <- rownames(peak_data_t)
 metadata$sample_clean <- gsub(".mzML$", "", metadata$filename)
 
 
-Gruops <- filter(metadata, Group != "IGNORE" & Group != "Blank")
-Gruops <- Gruops$Group
+Groups <- filter(metadata, Group != "IGNORE" & Group != "Blank")
+Groups <- Groups$Group
+
+# Create unique feature IDs combining m/z and retention time
+feature_ids <- paste(
+  feature_table$row.ID,
+  round(feature_table$row.m.z, digits = 4),
+  round(feature_table$row.retention.time, digits = 2),
+  sep = "_"
+)
 
 # Log transform and scale the data
 scaled_data <- scale(log1p(peak_data_t))
-
+colnames(scaled_data) <- feature_ids
 # Perform PCA
-pca_result <- prcomp(scaled_data)
+pca_result <- prcomp(scaled_data, scale = TRUE)
+
+# Combine loadings and eigenvalues into a single tibble
+pca_summary <- pca_result$rotation %>%
+  as_tibble(rownames = "feature") %>%
+  pivot_longer(
+    cols = starts_with("PC"),
+    names_to = "principal_component",
+    values_to = "loading"
+  ) %>%
+  mutate(
+    eigenvalue = rep(pca_result$sdev^2, each = nrow(pca_result$rotation))
+  )
+
+# --- 3. View the Result ---
+print(pca_summary)
 
 # Create data frame with PCA results
 pca_df <- data.frame(
@@ -79,12 +100,12 @@ pca_df <- data.frame(
 
 # Add sample names as a column
 pca_df$sample_clean <- sample_names
-pca_df$Gruops <- Gruops
+pca_df$Groups <- Groups
 head(pca_df)
 
 # Print diagnostic information
 cat("Dimensions of PCA dataframe:", dim(pca_df), "\n")
-cat("Number of NA values in Groups:", sum(is.na(pca_df$Gruops)), "\n")
+cat("Number of NA values in Groups:", sum(is.na(pca_df$Groups)), "\n")
 
 # Calculate variance explained
 var_explained <- pca_result$sdev^2 / sum(pca_result$sdev^2)
@@ -92,11 +113,11 @@ pc1_var <- round(var_explained[1] * 100, 1)
 pc2_var <- round(var_explained[2] * 100, 1)
 total_var <- round(sum(var_explained[1:2]) * 100, 1)
 
-# Define custom colors for 'Gruops'
+# Define custom colors for 'Groups'
 #custom_colors <- c("Healthy" = "#6d8abf", "TR1" = "#ccbb9c", "TR2" = "#ebe8e1", "PR1"= black, )
 
 # Create PCA plot
-pca_plot <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Gruops)) +
+pca_plot <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Groups)) +
   geom_point(size = 3, alpha = 0.8) +
   theme_bw() +
   labs(
