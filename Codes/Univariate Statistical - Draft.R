@@ -38,7 +38,7 @@ clean_sample_name <- function(x) {
 # Prepare metadata first
 metadata_clean <- metadata %>%
   mutate(filename = clean_sample_name(filename)) %>%
-  filter(Sample_Type == "Sample" &&  )  # Remove blanks
+  filter(Sample_Type == "Sample")  # Remove blanks
 
 # Reshape metabolites data to long format
 metabolites_long <- feature_table %>%
