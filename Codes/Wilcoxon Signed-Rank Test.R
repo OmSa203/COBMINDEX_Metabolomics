@@ -191,7 +191,7 @@ for(i in 1:nrow(metabolomics_data)) {
   results$p_value[i] <- test_result$p_value
   results$statistic[i] <- test_result$statistic
 }
-}
+
 
 # Calculate adjusted p-values using Benjamini-Hochberg (FDR) correction
 results$p_adjusted_BH <- p.adjust(results$p_value, method = "BH")
