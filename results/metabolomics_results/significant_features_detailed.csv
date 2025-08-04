@@ -1,0 +1,273 @@
+"","m.z","retention_time","kw_pvalue","group_stats"
+"1",200.093489995006,16.073454,0.00327217547318906,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0       0.000704         0.000695    0.000257        36.4
+2 TR2            10       0            0       0.000466         0.000431    0.000146        31.2
+3 PR1            10       0            0       0.000458         0.000386    0.000286        62.4
+4 PR2             9       0            0       0.000337         0.000281    0.000145        43.1
+5 TR1            10       0            0       0.000242         0.000222    0.0000686       28.3"
+"2",146.960121399058,0.49927115,0.00589697657329655,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0      0.00188         0.00222       0.00129         68.3
+2 TR2            10       0            0      0.0000424       0.0000295     0.0000461      109. 
+3 TR1            10       0            0      0.0000180       0.0000251     0.0000156       86.6
+4 PR1            10       0            0      0.0000215       0.0000237     0.0000120       56.1
+5 PR2             9       0            0      0.0000121       0.00000178    0.0000142      118. "
+"3",133.922413762241,16.877762,0.00590273052028977,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR1            10       0            0        0.00216         0.00232      0.000723       33.5
+2 TR2            10       0            0        0.00233         0.00228      0.000576       24.8
+3 Healthy         4       0            0        0.00159         0.00158      0.000741       46.7
+4 PR1            10       0            0        0.00155         0.00146      0.000533       34.4
+5 PR2             9       0            0        0.00110         0.000861     0.000664       60.2"
+"4",242.943269112861,0.5406019,0.00693432437683714,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0     0.00108          0.00131     0.000690          63.9
+2 TR1            10       0            0     0.00000659       0.00000281  0.00000705       107. 
+3 TR2            10       0            0     0.0000259        0.00000220  0.0000513        198. 
+4 PR2             9       0            0     0.00000208       0.00000145  0.00000249       119. 
+5 PR1            10       0            0     0.00000132       0.00000139  0.000000645       48.7"
+"5",145.050845258877,15.616678,0.00795709569232332,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0        0.00316         0.00296      0.00158        49.9
+2 PR2             9       0            0        0.00386         0.00187      0.00369        95.7
+3 TR1            10       0            0        0.00157         0.00122      0.00148        94.1
+4 TR2            10       0            0        0.00119         0.000972     0.000641       54  
+5 Healthy         4       0            0        0.00135         0.000940     0.000918       67.8"
+"6",265.147862300908,15.711845,0.00820444836340203,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0       0.000281        0.000243     0.000121        42.9
+2 TR1            10       0            0       0.000194        0.000152     0.000125        64.7
+3 Healthy         4       0            0       0.000139        0.000125     0.0000874       63.1
+4 PR2             9       0            0       0.000123        0.000103     0.0000833       67.8
+5 TR2            10       0            0       0.000108        0.0000802    0.0000707       65.5"
+"7",265.147888846183,15.107723,0.0118789684316408,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR1            10       0            0       0.000422         0.000378    0.000242        57.3
+2 PR1            10       0            0       0.000371         0.000355    0.000137        36.8
+3 Healthy         4       0            0       0.000266         0.000312    0.000136        51.2
+4 TR2            10       0            0       0.000259         0.000271    0.0000850       32.9
+5 PR2             9       0            0       0.000174         0.000196    0.0000927       53.2"
+"8",213.088853300061,16.063475,0.0125179743431563,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0       0.00176          0.00179      0.000978       55.5
+2 TR1            10       0            0       0.00134          0.00128      0.000724       53.9
+3 TR2            10       0            0       0.00107          0.000790     0.000485       45.3
+4 PR2             9       0            0       0.000746         0.000638     0.000277       37.1
+5 PR1            10       0            0       0.000697         0.000551     0.000461       66.2"
+"9",145.050899763861,15.152887,0.0175737895653121,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0       0.000936         0.000768     0.000382       40.8
+2 PR1            10       0            0       0.000669         0.000630     0.000309       46.2
+3 Healthy         4       0            0       0.000635         0.000613     0.000342       53.8
+4 TR1            10       0            0       0.000582         0.000594     0.000191       32.8
+5 TR2            10       0            0       0.000512         0.000512     0.000170       33.1"
+"10",163.061574237935,15.733917,0.0205394741295328,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0       0.00193          0.00206      0.000896       46.5
+2 PR2             9       0            0       0.00166          0.00172      0.000803       48.5
+3 TR2            10       0            0       0.00145          0.00138      0.000481       33.1
+4 TR1            10       0            0       0.00105          0.000936     0.000611       57.9
+5 PR1            10       0            0       0.000772         0.000539     0.000570       73.8"
+"11",310.930912220027,0.55791545,0.0218445708136195,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0    0.000675         0.000808     0.000439          65  
+2 PR1            10       0            0    0.00000142       0.00000161   0.000000935       66  
+3 TR1            10       0            0    0.00000425       0.00000155   0.00000644       152. 
+4 TR2            10       0            0    0.0000159        0.00000109   0.0000315        198  
+5 PR2             9       0            0    0.000000958      0.000000568  0.000000819       85.5"
+"12",227.104618701704,15.720992,0.0224633746031685,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0      0.000220         0.000208     0.000155        70.3
+2 PR1            10       0            0      0.000113         0.0000684    0.0000768       67.9
+3 TR2            10       0            0      0.0000912        0.0000656    0.0000845       92.6
+4 TR1            10       0            0      0.0000823        0.0000604    0.0000913      111. 
+5 Healthy         4       0            0      0.0000297        0.0000256    0.0000189       63.7"
+"13",264.100234032208,16.12601,0.0225953874374646,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0      0.0000397        0.0000457   0.0000145        36.6
+2 TR2            10       0            0      0.0000543        0.0000448   0.0000330        60.9
+3 PR2             9       0            0      0.0000357        0.0000285   0.0000215        60.1
+4 TR1            10       0            0      0.0000253        0.0000265   0.00000780       30.8
+5 Healthy         4       0            0      0.0000230        0.0000203   0.0000129        56.2"
+"14",277.009242902394,16.890808,0.0244628790865193,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0      0.000149         0.0000684    0.000137        91.7
+2 Healthy         4       0            0      0.0000518        0.0000526    0.0000155       29.9
+3 PR1            10       0            0      0.0000471        0.0000503    0.0000198       42  
+4 TR2            10       0            0      0.0000741        0.0000463    0.0000770      104. 
+5 TR1            10       0            0      0.0000315        0.0000300    0.0000111       35.2"
+"15",83.0236292012907,16.899805,0.0249919646561201,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR2            10       0            0        0.00267          0.00315     0.00131        49.1
+2 TR1            10       0            0        0.00293          0.00293     0.00127        43.2
+3 PR1            10       0            0        0.00216          0.00194     0.000616       28.5
+4 Healthy         4       0            0        0.00133          0.00151     0.000488       36.7
+5 PR2             9       0            0        0.00157          0.00135     0.00105        67.1"
+"16",329.2334371241,12.604264,0.0259535304011393,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR1            10       0            0       0.000746         0.000775    0.000128        17.1
+2 PR1            10       0            0       0.000724         0.000742    0.000140        19.3
+3 Healthy         4       0            0       0.000704         0.000680    0.0000826       11.7
+4 PR2             9       0            0       0.000557         0.000576    0.000147        26.4
+5 TR2            10       0            0       0.000588         0.000574    0.000158        26.8"
+"17",462.878392346485,0.55414855,0.026700180375195,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0      0.0000949        0.000119    0.0000502        52.9
+2 PR1            10       0            0      0.0000209        0.0000198   0.00000623       29.8
+3 TR1            10       0            0      0.0000187        0.0000181   0.00000577       30.8
+4 TR2            10       0            0      0.0000182        0.0000177   0.00000296       16.3
+5 PR2             9       0            0      0.0000161        0.0000161   0.00000307       19.1"
+"18",530.865463245887,0.55501366,0.0275745338550516,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0      0.0000904        0.000112    0.0000482        53.3
+2 PR1            10       0            0      0.0000132        0.0000122   0.00000491       37.3
+3 TR1            10       0            0      0.0000131        0.0000118   0.00000435       33.3
+4 TR2            10       0            0      0.0000121        0.0000118   0.00000394       32.5
+5 PR2             9       0            0      0.0000106        0.0000110   0.00000286       27.1"
+"19",174.955223480807,0.51881945,0.0286638956955879,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0       0.0178           0.0209       0.0120         67.2
+2 TR2            10       0            0       0.000408         0.000314     0.000471      115. 
+3 PR2             9       0            0       0.000188         0.000220     0.000157       83.6
+4 PR1            10       0            0       0.000191         0.000153     0.000194      102. 
+5 TR1            10       0            0       0.000156         0.000105     0.000179      115. "
+"20",116.024098856242,16.918753,0.0295146527574144,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0       0.000256         0.000219    0.0000723       28.3
+2 TR1            10       0            0       0.000168         0.000159    0.0000658       39.3
+3 TR2            10       0            0       0.000153         0.000154    0.0000825       54.1
+4 PR1            10       0            0       0.000164         0.000113    0.000115        70.2
+5 Healthy         4       0            0       0.000146         0.000110    0.000129        88.3"
+"21",159.066680777414,15.169439,0.0298607620953817,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0      0.000130         0.0000724    0.000138       106  
+2 Healthy         4       0            0      0.0000652        0.0000582    0.0000263       40.4
+3 TR1            10       0            0      0.0000462        0.0000459    0.0000212       45.9
+4 TR2            10       0            0      0.0000433        0.0000386    0.0000298       68.8
+5 PR1            10       0            0      0.0000758        0.0000309    0.000106       140. "
+"22",121.050697767465,15.636853,0.0302978987135744,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0       0.00126          0.000677     0.00110        87.6
+2 PR1            10       0            0       0.000473         0.000339     0.000455       96.3
+3 Healthy         4       0            0       0.000276         0.000295     0.000157       57.1
+4 TR2            10       0            0       0.000445         0.000291     0.000393       88.3
+5 TR1            10       0            0       0.000300         0.000171     0.000404      134. "
+"23",159.066639700585,16.367802,0.0317326013719832,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR2            10       0            0       0.00185          0.00155      0.00115        62.2
+2 PR1            10       0            0       0.00125          0.00138      0.000656       52.4
+3 Healthy         4       0            0       0.00137          0.000996     0.00114        82.7
+4 TR1            10       0            0       0.000887         0.000655     0.000737       83.2
+5 PR2             9       0            0       0.000681         0.000290     0.000800      118. "
+"24",130.039872940493,15.151573,0.032388836763524,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0       0.000581         0.000532    0.000294        50.6
+2 Healthy         4       0            0       0.000339         0.000358    0.000105        31  
+3 TR1            10       0            0       0.000314         0.000348    0.000107        34.1
+4 TR2            10       0            0       0.000274         0.000256    0.0000848       31  
+5 PR1            10       0            0       0.000284         0.000190    0.000220        77.6"
+"25",311.168650582371,16.138933,0.0339554161935566,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR1            10       0            0        0.0152           0.0138       0.00625       41.2
+2 Healthy         4       0            0        0.0124           0.0120       0.00507       40.8
+3 TR2            10       0            0        0.00935          0.0110       0.00421       45.1
+4 PR1            10       0            0        0.0120           0.0107       0.00452       37.7
+5 PR2             9       0            0        0.00795          0.00788      0.00458       57.6"
+"26",147.030148811658,16.575891,0.0352113640493279,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0       0.000456         0.000446    0.000152        33.4
+2 PR2             9       0            0       0.000289         0.000275    0.000201        69.7
+3 Healthy         4       0            0       0.000198         0.000193    0.0000448       22.6
+4 TR1            10       0            0       0.000198         0.000177    0.000133        67.4
+5 TR2            10       0            0       0.000270         0.000139    0.000286       106. "
+"27",110.034644210881,15.957519,0.0358007624312245,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR2            10       0            0        0.00270         0.00261      0.00126        46.9
+2 PR1            10       0            0        0.00176         0.00188      0.000626       35.6
+3 Healthy         4       0            0        0.00166         0.00147      0.000744       44.8
+4 TR1            10       0            0        0.00174         0.00140      0.00117        67.1
+5 PR2             9       0            0        0.00110         0.000970     0.000339       31  "
+"28",184.062060753621,16.340317,0.0371594891367522,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR2             9       0            0       0.000496         0.000516     0.000263       52.9
+2 TR2            10       0            0       0.000644         0.000508     0.000436       67.7
+3 PR1            10       0            0       0.000661         0.000443     0.000605       91.6
+4 Healthy         4       0            0       0.000262         0.000303     0.000156       59.3
+5 TR1            10       0            0       0.000294         0.000282     0.000169       57.3"
+"29",120.055444847964,15.590859,0.037172628264044,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 TR1            10       0            0       0.00152          0.00159      0.000915       60.3
+2 PR1            10       0            0       0.00135          0.00114      0.00109        80.8
+3 PR2             9       0            0       0.00163          0.00106      0.00121        74.4
+4 Healthy         4       0            0       0.000784         0.000783     0.000393       50.1
+5 TR2            10       0            0       0.000550         0.000440     0.000386       70.1"
+"30",377.061924287292,13.559451,0.0410416866903207,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0    0.00000191       0.00000181   0.000000328       17.2
+2 Healthy         4       0            0    0.00000148       0.00000157   0.000000525       35.5
+3 TR1            10       0            0    0.00000145       0.00000140   0.000000956       66.1
+4 TR2            10       0            0    0.00000127       0.000000941  0.000000757       59.8
+5 PR2             9       0            0    0.000000924      0.000000846  0.000000761       82.3"
+"31",83.0236227411721,16.438583,0.0416182269753399,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0        0.00969          0.0104       0.00246       25.4
+2 PR2             9       0            0        0.00637          0.00875      0.00431       67.7
+3 TR1            10       0            0        0.00416          0.00468      0.00274       65.9
+4 TR2            10       0            0        0.00390          0.00278      0.00268       68.7
+5 PR1            10       0            0        0.00359          0.00213      0.00342       95.2"
+"32",184.062058601766,16.079058,0.0427139131522638,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0       0.00129          0.00130      0.000297       23.1
+2 TR1            10       0            0       0.000976         0.000850     0.000583       59.8
+3 TR2            10       0            0       0.000819         0.000648     0.000532       65  
+4 PR2             9       0            0       0.000638         0.000477     0.000531       83.3
+5 PR1            10       0            0       0.000498         0.000441     0.000348       70  "
+"33",325.184187097682,16.405966,0.0447971970811676,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 PR1            10       0            0        0.00454          0.00424     0.00278        61.3
+2 TR1            10       0            0        0.00538          0.00365     0.00426        79.3
+3 Healthy         4       0            0        0.00213          0.00178     0.000885       41.6
+4 PR2             9       0            0        0.00391          0.00151     0.00545       139. 
+5 TR2            10       0            0        0.00179          0.00141     0.00147        82.4"
+"34",394.890578077612,0.5539402,0.0481223943712686,"# A tibble: 5 × 8
+  Group   n_samples n_zeros zero_percent mean_intensity median_intensity sd_intensity cv_percent
+  <chr>       <int>   <int>        <dbl>          <dbl>            <dbl>        <dbl>      <dbl>
+1 Healthy         4       0            0      0.000118         0.000134    0.0000397        33.7
+2 PR1            10       0            0      0.0000742        0.0000721   0.0000181        24.3
+3 TR1            10       0            0      0.0000716        0.0000704   0.0000131        18.2
+4 TR2            10       0            0      0.0000660        0.0000698   0.0000114        17.3
+5 PR2             9       0            0      0.0000596        0.0000573   0.00000932       15.6"
