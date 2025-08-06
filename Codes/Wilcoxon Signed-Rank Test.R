@@ -4,7 +4,7 @@
 
 # --- 1. Configuration ---
 data_dir <- "/Users/batelhagbi/Documents/GitHub/COBMINDEX_Metabolomics/Data"
-result_dir <- "/Users/batelhagbi/Documents/GitHub/COBMINDEX_Metabolomics/results/Univariate"
+base_result_dir <- "/Users/batelhagbi/Documents/GitHub/COBMINDEX_Metabolomics/results/Univariate"
 
 # --- 2. Analysis Configuration ---
 # Define which comparison to perform
@@ -25,11 +25,6 @@ print(paste("Analysis Configuration:"))
 print(paste("Comparison:", paste0(group1, timepoint1), "vs", paste0(group2, timepoint2)))
 print(paste("Analysis type:", ifelse(paired_analysis, "Paired", "Unpaired")))
 
-# Create results directory if it doesn't exist
-if (!dir.exists(result_dir)) {
-  dir.create(result_dir, recursive = TRUE)
-}
-
 # Set working directory to data directory
 setwd(data_dir)
 
@@ -42,8 +37,45 @@ library(readxl)
 
 # Read the data files
 print("Loading data files...")
-metadata <- read_csv("POSmetadata_w_subjects.csv")
-metabolomics_data <- read_csv("Imputed_TIC_Normalised_table_Positive.csv")
+metadata <- read_csv("Negative_metadata_w_subjects.csv")
+metabolomics_data <- read_csv("Imputed_TIC_Normalised_table_Negative.csv")
+
+# Clean column names in metadata (remove spaces)
+colnames(metadata) <- trimws(colnames(metadata))
+
+# Automatically detect polarity from the loaded file names
+# Extract polarity from the actual file paths used above
+metadata_filename <- "Negative_metadata_w_subjects.csv"  # Update this when you change the file
+data_filename <- "Imputed_TIC_Normalised_table_Negative.csv"  # Update this when you change the file
+
+polarity <- "Unknown"  # Default
+
+# Check for polarity indicators in the actual filenames being used
+all_filenames <- c(metadata_filename, data_filename)
+
+if (any(grepl("POS|Positive", all_filenames, ignore.case = TRUE))) {
+  polarity <- "Positive"
+} else if (any(grepl("NEG|Negative", all_filenames, ignore.case = TRUE))) {
+  polarity <- "Negative"
+}
+
+print(paste("Detected polarity:", polarity))
+
+# Create organized directory structure
+comparison_name <- paste0(group1, timepoint1, "_vs_", group2, timepoint2)
+analysis_type <- ifelse(paired_analysis, "paired", "unpaired")
+comparison_folder <- paste0(comparison_name, "_", analysis_type)
+
+# Create the full directory path: base/TR1_vs_TR2_paired/POS/
+result_dir <- file.path(base_result_dir, comparison_folder, polarity)
+
+# Create results directory structure if it doesn't exist
+if (!dir.exists(result_dir)) {
+  dir.create(result_dir, recursive = TRUE)
+  print(paste("Created directory structure:", result_dir))
+} else {
+  print(paste("Using existing directory:", result_dir))
+}
 
 # Clean column names in metadata (remove spaces)
 colnames(metadata) <- trimws(colnames(metadata))
@@ -339,10 +371,104 @@ if(nrow(meaningful_changes) > 0) {
   write_csv(meaningful_changes, meaningful_file)
   cat(paste("\nMeaningful changes saved to:", meaningful_file, "\n"))
   
+  # Create subfolder for individual metabolite plots within the organized structure
+  individual_plots_dir <- file.path(result_dir, "individual_metabolite_plots")
+  if (!dir.exists(individual_plots_dir)) {
+    dir.create(individual_plots_dir, recursive = TRUE)
+  }
+  print(paste("Created directory for individual plots:", individual_plots_dir))
+  
   # Create individual plots for meaningful changes - ALL metabolites
   print("Creating individual plots for ALL meaningful changes...")
   
-  # Prepare data for plotting ALL meaningful metabolites
+  # First create individual plots for each metabolite
+  print("Creating separate plot files for each meaningful metabolite...")
+  
+  for (i in 1:nrow(meaningful_changes)) {
+    metabolite_idx <- which(metabolomics_data$row.ID == meaningful_changes$row_ID[i])
+    
+    group1_vals <- as.numeric(group1_data[metabolite_idx, ])
+    group2_vals <- as.numeric(group2_data[metabolite_idx, ])
+    
+    # Create data for this specific metabolite
+    if (paired_analysis) {
+      individual_data <- data.frame(
+        Subject = rep(1:length(group1_vals), 2),
+        Group = rep(c(paste0(group1, timepoint1), paste0(group2, timepoint2)), each = length(group1_vals)),
+        Value = c(group1_vals, group2_vals),
+        stringsAsFactors = FALSE
+      )
+    } else {
+      individual_data <- data.frame(
+        Subject = c(1:length(group1_vals), 1:length(group2_vals)),
+        Group = c(rep(paste0(group1, timepoint1), length(group1_vals)), 
+                  rep(paste0(group2, timepoint2), length(group2_vals))),
+        Value = c(group1_vals, group2_vals),
+        stringsAsFactors = FALSE
+      )
+    }
+    
+    # Create individual plot
+    metabolite_title <- paste("m/z", round(meaningful_changes$mz[i], 4), "| RT", round(meaningful_changes$retention_time[i], 2), "min")
+    metabolite_subtitle <- paste("Row ID:", meaningful_changes$row_ID[i], "| p =", round(meaningful_changes$p_value[i], 4), 
+                                 "| Effect Size =", round(meaningful_changes$effect_size[i], 3), 
+                                 "| Fold Change =", round(meaningful_changes$fold_change[i], 2))
+    
+    individual_plot <- ggplot(individual_data, aes(x = Group, y = Value)) +
+      geom_boxplot(alpha = 0.7, outlier.shape = NA, width = 0.6, fill = "lightblue") +
+      geom_point(aes(color = Group), size = 3, alpha = 0.8, position = position_jitter(width = 0.15)) +
+      {if(paired_analysis) geom_line(aes(group = Subject), alpha = 0.6, color = "gray50", size = 0.8)} +
+      labs(
+        title = metabolite_title,
+        subtitle = metabolite_subtitle,
+        x = paste("Treatment Group (", comparison_name, ")", sep=""),
+        y = "Normalized Intensity",
+        color = "Group"
+      ) +
+      theme_minimal() +
+      theme(
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 11, color = "gray30"),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        legend.position = "bottom",
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 10)
+      ) +
+      scale_color_manual(values = c("steelblue", "darkred"))
+    
+    # Add significance annotation
+    y_max <- max(individual_data$Value) * 1.1
+    if (meaningful_changes$p_value[i] < 0.001) {
+      sig_text <- "***"
+    } else if (meaningful_changes$p_value[i] < 0.01) {
+      sig_text <- "**"
+    } else if (meaningful_changes$p_value[i] < 0.05) {
+      sig_text <- "*"
+    }
+    
+    individual_plot <- individual_plot +
+      annotate("text", x = 1.5, y = y_max, label = sig_text, size = 6, color = "red")
+    
+    # Save individual plot
+    safe_mz <- round(meaningful_changes$mz[i], 4)
+    safe_rt <- round(meaningful_changes$retention_time[i], 2)
+    individual_filename <- paste0("Row_", meaningful_changes$row_ID[i], "_mz_", safe_mz, "_RT_", safe_rt, ".png")
+    individual_file_path <- file.path(individual_plots_dir, individual_filename)
+    
+    ggsave(individual_file_path, individual_plot, width = 8, height = 6, dpi = 300)
+    
+    if (i %% 10 == 0) {
+      print(paste("Saved individual plot", i, "of", nrow(meaningful_changes)))
+    }
+  }
+  
+  cat(paste("Individual plots for all", nrow(meaningful_changes), "meaningful metabolites saved to:", individual_plots_dir, "\n"))
+  
+  # Now create the combined plot with all metabolites
+  print("Creating combined plot with all meaningful metabolites...")
+  
+  # Prepare data for plotting ALL meaningful metabolites in combined plot
   plot_data <- data.frame()
   
   for (i in 1:nrow(meaningful_changes)) {  # Plot ALL meaningful metabolites
@@ -511,6 +637,9 @@ if(sum(results$p_adjusted_BH < 0.05, na.rm = TRUE) > 0) {
 
 # Final summary
 print("Analysis complete! Check the generated files for detailed results.")
+print(paste("All results saved in organized directory structure:"))
+print(paste("Main directory:", result_dir))
+print("")
 print("Files generated:")
 print(paste("1.", results_file, "- Complete results table with metabolite IDs"))
 print(paste("2.", volcano_plot_file, "- Volcano plot visualization"))
@@ -518,16 +647,27 @@ print(paste("3.", pvalue_plot_file, "- P-value distribution plot"))
 if(exists("meaningful_file")) {
   print(paste("4.", meaningful_file, "- Meaningful changes (Effect > 0.3 & p < 0.05)"))
 }
+if(exists("individual_plots_dir")) {
+  print(paste("5.", individual_plots_dir, "/ - Individual plots for each meaningful metabolite"))
+}
 if(exists("meaningful_plot_file")) {
-  print(paste("5.", meaningful_plot_file, "- ALL meaningful metabolites plot"))
+  print(paste("6.", meaningful_plot_file, "- ALL meaningful metabolites combined plot"))
 }
 if(exists("top12_file")) {
-  print(paste("6.", top12_file, "- Top 12 meaningful metabolites plot"))
+  print(paste("7.", top12_file, "- Top 12 meaningful metabolites plot"))
 }
 if(exists("effect_plot_file")) {
-  print(paste("7.", effect_plot_file, "- Effect size vs p-value visualization"))
+  print(paste("8.", effect_plot_file, "- Effect size vs p-value visualization"))
 }
 if(exists("significant_results_file")) {
-  print(paste("8.", significant_results_file, "- FDR significant metabolites only"))
+  print(paste("9.", significant_results_file, "- FDR significant metabolites only"))
 }
+
+print("")
+print(paste("Directory structure created:"))
+print(paste("└── ", base_result_dir))
+print(paste("    └── ", comparison_folder))
+print(paste("        └── ", polarity))
+print(paste("            ├── Results files (.csv, .png)"))
+print(paste("            └── individual_metabolite_plots/"))
 
