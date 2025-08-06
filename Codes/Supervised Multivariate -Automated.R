@@ -165,7 +165,7 @@ perform_oplsda <- function(full_feature_table, metadata, plot_title, groups_to_i
 perform_random_forest <- function(full_feature_table, metadata, plot_title, groups_to_include) {
   
   #=========== 1. Pre-process Data ====================
-  # **IMPROVED**: Create a composite feature identifier in the format ID_mz_retention-time
+  #Create a composite feature identifier in the format ID_mz_retention-time
   feature_identifiers <- paste(
     full_feature_table[[1]], 
     round(full_feature_table[[2]], 4), # Assumes column 2 is m/z
