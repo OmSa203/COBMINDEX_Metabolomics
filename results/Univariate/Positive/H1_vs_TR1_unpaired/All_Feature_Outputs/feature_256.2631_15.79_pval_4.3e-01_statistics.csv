@@ -1,0 +1,3 @@
+"Group","Timepoint","n_samples","n_zeros","zero_percent","mean_intensity","median_intensity","sd_intensity","cv_percent"
+"Healthy","1",4,0,0,7.88757661974401e-05,8.65459818397044e-05,2.69424766150731e-05,34.1581171428894
+"TR","1",10,0,0,0.000248895412529507,0.00022756701663006,0.000152210236237048,61.1542955694306

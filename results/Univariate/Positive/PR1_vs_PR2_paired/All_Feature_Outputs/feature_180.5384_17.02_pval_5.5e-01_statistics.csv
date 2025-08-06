@@ -1,0 +1,3 @@
+"Group","Timepoint","n_samples","n_zeros","zero_percent","mean_intensity","median_intensity","sd_intensity","cv_percent"
+"PR","1",8,0,0,5.32493203773086e-05,6.01808909079605e-05,1.9032483878869e-05,35.742209936222
+"PR","2",8,0,0,3.68020464279237e-05,3.71013682800602e-05,2.18839793649472e-05,59.4640284686522
