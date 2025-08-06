@@ -163,6 +163,31 @@ perform_wilcoxon_test <- function(group1_values, group2_values, paired = TRUE) {
   ))
 }
 
+# Calculate effect size for Wilcoxon test
+calculate_effect_size <- function(group1_values, group2_values, paired = TRUE) {
+  if (paired) {
+    # For paired analysis: rank-biserial correlation
+    differences <- group1_values - group2_values
+    n <- length(differences)
+    
+    test_result <- wilcox.test(group1_values, group2_values, paired = TRUE, exact = FALSE)
+    W <- test_result$statistic
+    r <- (2 * W) / (n * (n + 1)) - 0.5
+    
+    return(r)
+  } else {
+    # For unpaired analysis: rank-biserial correlation (Mann-Whitney U)
+    n1 <- length(group1_values)
+    n2 <- length(group2_values)
+    
+    test_result <- wilcox.test(group1_values, group2_values, paired = FALSE, exact = FALSE)
+    U <- test_result$statistic
+    r <- (2 * U) / (n1 * n2) - 1
+    
+    return(r)
+  }
+}
+
 print(paste("Performing", ifelse(paired_analysis, "paired", "unpaired"), "Wilcoxon tests..."))
 print("This may take a few moments...")
 
@@ -191,38 +216,12 @@ for(i in 1:nrow(metabolomics_data)) {
   results$p_value[i] <- test_result$p_value
   results$statistic[i] <- test_result$statistic
 }
-}
 
 # Calculate adjusted p-values using Benjamini-Hochberg (FDR) correction
 results$p_adjusted_BH <- p.adjust(results$p_value, method = "BH")
 
 # Calculate adjusted p-values using Bonferroni correction
 results$p_adjusted_Bonferroni <- p.adjust(results$p_value, method = "bonferroni")
-
-# Calculate effect size for Wilcoxon test
-calculate_effect_size <- function(group1_values, group2_values, paired = TRUE) {
-  if (paired) {
-    # For paired analysis: rank-biserial correlation
-    differences <- group1_values - group2_values
-    n <- length(differences)
-    
-    test_result <- wilcox.test(group1_values, group2_values, paired = TRUE, exact = FALSE)
-    W <- test_result$statistic
-    r <- (2 * W) / (n * (n + 1)) - 0.5
-    
-    return(r)
-  } else {
-    # For unpaired analysis: rank-biserial correlation (Mann-Whitney U)
-    n1 <- length(group1_values)
-    n2 <- length(group2_values)
-    
-    test_result <- wilcox.test(group1_values, group2_values, paired = FALSE, exact = FALSE)
-    U <- test_result$statistic
-    r <- (2 * U) / (n1 * n2) - 1
-    
-    return(r)
-  }
-}
 
 print("Calculating effect sizes...")
 results$effect_size <- numeric(nrow(results))
@@ -250,6 +249,7 @@ print(paste("Metabolites with valid p-values:", sum(!is.na(results$p_value))))
 print(paste("Significant metabolites (p < 0.05):", sum(results$p_value < 0.05, na.rm = TRUE)))
 print(paste("Significant metabolites (FDR < 0.05):", sum(results$p_adjusted_BH < 0.05, na.rm = TRUE)))
 print(paste("Significant metabolites (Bonferroni < 0.05):", sum(results$p_adjusted_Bonferroni < 0.05, na.rm = TRUE)))
+print(paste("Metabolites with large effect size (|effect| > 0.3):", sum(abs(results$effect_size) > 0.3, na.rm = TRUE)))
 
 # Display top 20 most significant results
 print("=== TOP 20 MOST SIGNIFICANT METABOLITES ===")
@@ -313,25 +313,180 @@ pvalue_plot_file <- file.path(result_dir, pvalue_filename)
 ggsave(pvalue_plot_file, p_value_hist, width = 8, height = 6, dpi = 300)
 print(paste("P-value distribution plot saved to:", pvalue_plot_file))
 
-# Generate detailed summary report
-print("=== DETAILED RESULTS SUMMARY ===")
-cat("\nAnalysis:", ifelse(paired_analysis, "Paired", "Unpaired"), "Wilcoxon Test\n")
-cat("Comparison:", comparison_name, "\n")
-if (paired_analysis) {
-  cat("Number of paired subjects:", ncol(group1_data), "\n")
+# Find metabolites with meaningful changes (good effect size + statistical support)
+meaningful_changes <- results[abs(results$effect_size) > 0.3 & results$p_value < 0.05, ]
+
+if(nrow(meaningful_changes) > 0) {
+  cat("\n=== MEANINGFUL CHANGES (|Effect Size| > 0.3 & p < 0.05) ===\n")
+  cat("Found", nrow(meaningful_changes), "metabolites with meaningful changes:\n")
+  
+  meaningful_changes <- meaningful_changes[order(meaningful_changes$p_value), ]
+  
+  for(i in 1:min(20, nrow(meaningful_changes))) {
+    cat(sprintf("%d. Row ID %s | m/z %.4f | RT %.2f min | p = %.3f | Effect = %.3f | FC = %.2f\n",
+                i,
+                meaningful_changes$row_ID[i],
+                meaningful_changes$mz[i],
+                meaningful_changes$retention_time[i],
+                meaningful_changes$p_value[i],
+                meaningful_changes$effect_size[i],
+                meaningful_changes$fold_change[i]))
+  }
+  
+  # Save meaningful changes to a separate file
+  meaningful_filename <- paste0(comparison_name, "_", ifelse(paired_analysis, "paired", "unpaired"), "_meaningful_changes.csv")
+  meaningful_file <- file.path(result_dir, meaningful_filename)
+  write_csv(meaningful_changes, meaningful_file)
+  cat(paste("\nMeaningful changes saved to:", meaningful_file, "\n"))
+  
+  # Create individual plots for meaningful changes - ALL metabolites
+  print("Creating individual plots for ALL meaningful changes...")
+  
+  # Prepare data for plotting ALL meaningful metabolites
+  plot_data <- data.frame()
+  
+  for (i in 1:nrow(meaningful_changes)) {  # Plot ALL meaningful metabolites
+    metabolite_idx <- which(metabolomics_data$row.ID == meaningful_changes$row_ID[i])
+    
+    group1_vals <- as.numeric(group1_data[metabolite_idx, ])
+    group2_vals <- as.numeric(group2_data[metabolite_idx, ])
+    
+    # Create paired data for plotting
+    if (paired_analysis) {
+      temp_data <- data.frame(
+        Subject = rep(1:length(group1_vals), 2),
+        Group = rep(c(paste0(group1, timepoint1), paste0(group2, timepoint2)), each = length(group1_vals)),
+        Value = c(group1_vals, group2_vals),
+        Metabolite = paste("m/z", round(meaningful_changes$mz[i], 4), 
+                           "(p =", round(meaningful_changes$p_value[i], 3), 
+                           ", Effect =", round(meaningful_changes$effect_size[i], 3), ")"),
+        MetaboliteID = meaningful_changes$row_ID[i],
+        stringsAsFactors = FALSE
+      )
+    } else {
+      temp_data <- data.frame(
+        Subject = c(1:length(group1_vals), 1:length(group2_vals)),
+        Group = c(rep(paste0(group1, timepoint1), length(group1_vals)), 
+                  rep(paste0(group2, timepoint2), length(group2_vals))),
+        Value = c(group1_vals, group2_vals),
+        Metabolite = paste("m/z", round(meaningful_changes$mz[i], 4), 
+                           "(p =", round(meaningful_changes$p_value[i], 3), 
+                           ", Effect =", round(meaningful_changes$effect_size[i], 3), ")"),
+        MetaboliteID = meaningful_changes$row_ID[i],
+        stringsAsFactors = FALSE
+      )
+    }
+    
+    plot_data <- rbind(plot_data, temp_data)
+  }
+  
+  # Calculate optimal plot dimensions based on number of metabolites
+  n_metabolites <- nrow(meaningful_changes)
+  n_cols <- min(6, ceiling(sqrt(n_metabolites)))  # Max 6 columns
+  n_rows <- ceiling(n_metabolites / n_cols)
+  
+  # Calculate plot dimensions
+  plot_width <- max(15, n_cols * 2.5)
+  plot_height <- max(10, n_rows * 2)
+  
+  print(paste("Creating plot with", n_metabolites, "metabolites in", n_rows, "rows and", n_cols, "columns"))
+  
+  # Create the plot
+  meaningful_plot <- ggplot(plot_data, aes(x = Group, y = Value)) +
+    geom_boxplot(alpha = 0.7, outlier.shape = NA, width = 0.6) +
+    geom_point(aes(color = Group), size = 1.5, alpha = 0.8, position = position_jitter(width = 0.2)) +
+    {if(paired_analysis) geom_line(aes(group = Subject), alpha = 0.5, color = "gray")} +
+    facet_wrap(~ Metabolite, scales = "free_y", ncol = n_cols) +
+    labs(
+      title = paste("ALL Meaningful Metabolite Changes:", comparison_name),
+      subtitle = paste("All", n_metabolites, "metabolites with Effect Size > 0.3 & p < 0.05 (", ifelse(paired_analysis, "Paired", "Unpaired"), "Analysis )"),
+      x = "Group",
+      y = "Normalized Intensity",
+      color = "Group"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      axis.text.y = element_text(size = 7),
+      strip.text = element_text(size = 7),
+      plot.title = element_text(size = 14),
+      plot.subtitle = element_text(size = 12),
+      legend.position = "bottom"
+    ) +
+    scale_color_manual(values = c("steelblue", "darkred"))
+  
+  # Save the meaningful changes plot
+  meaningful_plot_filename <- paste0(comparison_name, "_", ifelse(paired_analysis, "paired", "unpaired"), "_ALL_meaningful_changes_plot.png")
+  meaningful_plot_file <- file.path(result_dir, meaningful_plot_filename)
+  ggsave(meaningful_plot_file, meaningful_plot, width = plot_width, height = plot_height, dpi = 300)
+  cat(paste("ALL meaningful changes plot (", n_metabolites, "metabolites) saved to:", meaningful_plot_file, "\n"))
+  
+  # Also create a focused plot with just the top 12 most significant
+  if (n_metabolites > 12) {
+    top12_data <- plot_data[plot_data$MetaboliteID %in% meaningful_changes$row_ID[1:12], ]
+    
+    top12_plot <- ggplot(top12_data, aes(x = Group, y = Value)) +
+      geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+      geom_point(aes(color = Group), size = 2, alpha = 0.8) +
+      {if(paired_analysis) geom_line(aes(group = Subject), alpha = 0.5, color = "gray")} +
+      facet_wrap(~ Metabolite, scales = "free_y", ncol = 3) +
+      labs(
+        title = paste("Top 12 Most Significant Metabolites:", comparison_name),
+        subtitle = paste("Lowest p-values among meaningful changes (Effect Size > 0.3 & p < 0.05)"),
+        x = "Group",
+        y = "Normalized Intensity",
+        color = "Group"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.text = element_text(size = 8),
+        legend.position = "bottom"
+      ) +
+      scale_color_manual(values = c("steelblue", "darkred"))
+    
+    top12_filename <- paste0(comparison_name, "_", ifelse(paired_analysis, "paired", "unpaired"), "_top12_meaningful_changes.png")
+    top12_file <- file.path(result_dir, top12_filename)
+    ggsave(top12_file, top12_plot, width = 15, height = 12, dpi = 300)
+    cat(paste("Top 12 meaningful changes plot saved to:", top12_file, "\n"))
+  }
+  
 } else {
-  cat("Group 1 sample size:", ncol(group1_data), "\n")
-  cat("Group 2 sample size:", ncol(group2_data), "\n")
+  cat("\nNo metabolites found with meaningful changes (|Effect Size| > 0.3 & p < 0.05)\n")
+  cat("Consider relaxing criteria or trying different group comparisons.\n")
 }
-cat("Number of metabolites tested:", nrow(results), "\n")
-cat("Significance threshold: p < 0.05\n")
-cat("Multiple testing correction: Benjamini-Hochberg (FDR)\n\n")
 
-cat("Results Summary:\n")
-cat("- Metabolites with p < 0.05:", sum(results$p_value < 0.05, na.rm = TRUE), "\n")
-cat("- Metabolites with FDR < 0.05:", sum(results$p_adjusted_BH < 0.05, na.rm = TRUE), "\n")
-cat("- Metabolites with Bonferroni < 0.05:", sum(results$p_adjusted_Bonferroni < 0.05, na.rm = TRUE), "\n")
+# Create effect size vs p-value plot for all results
+print("Creating overall effect size visualization...")
 
+results$meaningful <- ifelse(abs(results$effect_size) > 0.3 & results$p_value < 0.05, 
+                             "Meaningful Change", "Other")
+
+effect_plot <- ggplot(results, aes(x = effect_size, y = -log10(p_value))) +
+  geom_point(aes(color = meaningful), alpha = 0.6, size = 1.5) +
+  scale_color_manual(values = c("Meaningful Change" = "red", "Other" = "gray70")) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "blue", alpha = 0.7) +
+  geom_vline(xintercept = c(-0.3, 0.3), linetype = "dashed", color = "darkgreen", alpha = 0.7) +
+  labs(
+    title = paste("Effect Size vs Statistical Significance:", comparison_name),
+    subtitle = paste("Meaningful changes:", sum(abs(results$effect_size) > 0.3 & results$p_value < 0.05, na.rm = TRUE), "metabolites with |Effect Size| > 0.3 & p < 0.05"),
+    x = "Effect Size (Rank-biserial correlation)",
+    y = "-Log10(P-value)",
+    color = "Classification"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  annotate("text", x = 0.4, y = max(-log10(results$p_value)) * 0.9, 
+           label = "Large Effect\n& Significant", size = 3, color = "darkgreen") +
+  annotate("text", x = -0.4, y = max(-log10(results$p_value)) * 0.9, 
+           label = "Large Effect\n& Significant", size = 3, color = "darkgreen")
+
+effect_plot_filename <- paste0(comparison_name, "_", ifelse(paired_analysis, "paired", "unpaired"), "_effect_size_plot.png")
+effect_plot_file <- file.path(result_dir, effect_plot_filename)
+ggsave(effect_plot_file, effect_plot, width = 10, height = 8, dpi = 300)
+print(paste("Effect size plot saved to:", effect_plot_file))
+
+# Handle FDR significant metabolites if any exist
 if(sum(results$p_adjusted_BH < 0.05, na.rm = TRUE) > 0) {
   cat("\nTop 10 Significant metabolites (FDR < 0.05) with full identification:\n")
   significant_metabolites <- results[results$p_adjusted_BH < 0.05 & !is.na(results$p_adjusted_BH), ]
@@ -354,11 +509,25 @@ if(sum(results$p_adjusted_BH < 0.05, na.rm = TRUE) > 0) {
   cat(paste("\nSignificant metabolites saved separately to:", significant_results_file, "\n"))
 }
 
+# Final summary
 print("Analysis complete! Check the generated files for detailed results.")
 print("Files generated:")
 print(paste("1.", results_file, "- Complete results table with metabolite IDs"))
 print(paste("2.", volcano_plot_file, "- Volcano plot visualization"))
 print(paste("3.", pvalue_plot_file, "- P-value distribution plot"))
-if(exists("significant_results_file")) {
-  print(paste("4.", significant_results_file, "- Significant metabolites only"))
+if(exists("meaningful_file")) {
+  print(paste("4.", meaningful_file, "- Meaningful changes (Effect > 0.3 & p < 0.05)"))
 }
+if(exists("meaningful_plot_file")) {
+  print(paste("5.", meaningful_plot_file, "- ALL meaningful metabolites plot"))
+}
+if(exists("top12_file")) {
+  print(paste("6.", top12_file, "- Top 12 meaningful metabolites plot"))
+}
+if(exists("effect_plot_file")) {
+  print(paste("7.", effect_plot_file, "- Effect size vs p-value visualization"))
+}
+if(exists("significant_results_file")) {
+  print(paste("8.", significant_results_file, "- FDR significant metabolites only"))
+}
+
