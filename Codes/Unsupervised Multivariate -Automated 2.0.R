@@ -427,7 +427,8 @@ analysis_definitions <- list(
   list(title = "Analysis of Serum Metabolites (TR1, TR2)", groups = c("TR1", "TR2"), file_suffix = "_TR1_TR2", folder_name = "TR1_TR2"),
   list(title = "Analysis of Serum Metabolites (H, PR1, PR2)", groups = c("Healthy", "PR1", "PR2"), file_suffix = "_H_PR1_PR2", folder_name = "H_PR1_PR2"),
   list(title = "Analysis of Serum Metabolites (PR1, PR2)", groups = c("PR1", "PR2"), file_suffix = "_PR1_PR2", folder_name = "PR1_PR2"),
-  list(title = "Analysis of Serum Metabolites (TR2, PR2)", groups = c("TR2", "PR2"), file_suffix = "_TR2_PR2", folder_name = "TR2_PR2")
+  list(title = "Analysis of Serum Metabolites (TR2, PR2)", groups = c("TR2", "PR2"), file_suffix = "_TR2_PR2", folder_name = "TR2_PR2"),
+  list(title = "Analysis of Serum Metabolites (HC, TR2, PR2)", groups = c("Healthy","TR2", "PR2"), file_suffix = "HC_TR2_PR2", folder_name = "HC_TR2_PR2"),
 )
 
 # NEW: Specific list for PCoA to define distance metrics
