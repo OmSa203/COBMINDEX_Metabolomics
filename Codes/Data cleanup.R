@@ -54,7 +54,7 @@ FT <- read.csv("NEW_Quant_Table_Negative.csv")
 head(FT)
 
 #metadata
-MD <- read.csv("NEGmetaData.csv")
+MD <- read.csv("Negative_metaData.csv")
 head(MD)
 
 
@@ -87,9 +87,9 @@ BSaverage <- data.frame(row.ID = select(FT, row.ID), mz = select(FT, row.m.z),RT
 #Blank/Sample ratio
 BSaverage$ratio <- (BSaverage$MeanB+1)/(BSaverage$MeanS+1)
 
-#if ratio is bigger than 2 then it's 0, if not then it's 1
+#if ratio is bigger than 0.3 then it's 0, if not then it's 1
 BSaverage <- BSaverage %>% 
-  mutate(bin = if_else(BSaverage$ratio > 0.3, 1, 0))
+  mutate(bin = if_else(BSaverage$ratio < 0.3, 1, 0))
 
 #Number of features after blank removal
 FeaturesRemoved <- (nrow(BSaverage)-sum(BSaverage$bin))
@@ -219,7 +219,7 @@ FT <- read.csv("NEW_Quant_Table_Positive.csv")
 head(FT)
 
 #metadata
-MD <- read.csv("POSmetaData.csv")
+MD <- read.csv("Positive_metaData.csv")
 head(MD)
 
 
@@ -254,7 +254,7 @@ BSaverage$ratio <- (BSaverage$MeanB+1)/(BSaverage$MeanS+1)
 
 #if ratio is bigger than 2 then it's 0, if not then it's 1
 BSaverage <- BSaverage %>% 
-  mutate(bin = if_else(BSaverage$ratio > 0.3, 1, 0))
+  mutate(bin = if_else(BSaverage$ratio < 0.3, 1, 0))
 
 #Number of features after blank removal
 FeaturesRemoved <- (nrow(BSaverage)-sum(BSaverage$bin))
